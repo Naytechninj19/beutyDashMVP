@@ -1,65 +1,227 @@
-import Image from "next/image";
+'use client'
+
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
 
 export default function Home() {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [service, setService] = useState('')
+  const [claimLink, setClaimLink] = useState('')
+  const [waitlistClients, setWaitlistClients] = useState<any[]>([])
+  const [availableSlots, setAvailableSlots] = useState<any[]>([])
+
+  const handleSubmit = async () => {
+    const { error } = await supabase.from('waitlist').insert([
+      {
+        name,
+        email,
+        service,
+      },
+    ])
+
+    if (error) {
+      console.error(error)
+      alert(error.message)
+    } else {
+      alert('Joined waitlist!')
+      setName('')
+      setEmail('')
+      setService('')
+      fetchWaitlistClients()
+    }
+  }
+
+  const triggerCancellation = async () => {
+    const startTime = new Date()
+    startTime.setDate(startTime.getDate() + 1)
+    startTime.setHours(14, 0, 0, 0)
+
+    const endTime = new Date(startTime)
+    endTime.setHours(15, 0, 0, 0)
+
+    const { data, error } = await supabase
+      .from('slots')
+      .insert([
+        {
+          service: 'Haircut',
+          start_time: startTime.toISOString(),
+          end_time: endTime.toISOString(),
+          status: 'available',
+        },
+      ])
+      .select()
+      .single()
+
+    if (error) {
+      console.error(error)
+      alert(error.message)
+    } else {
+      const link = `${window.location.origin}/claim/${data.id}`
+      setClaimLink(link)
+      fetchAvailableSlots()
+
+
+      alert('Fake Cancellation triggered!')
+    }
+  }
+
+  const fetchWaitlistClients = async () => {
+  const { data, error } = await supabase
+    .from('waitlist')
+    .select('*')
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  setWaitlistClients(data)
+}
+
+
+
+const fetchAvailableSlots = async () => {
+  const { data, error } = await supabase
+    .from('slots')
+    .select('*')
+    .eq('status', 'available')
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  setAvailableSlots(data)
+}
+
+ useEffect(() => {
+    fetchWaitlistClients()
+    fetchAvailableSlots()
+  }, [])
+
+  const copyClaimLink = async () => {
+  await navigator.clipboard.writeText(claimLink)
+  alert('Claim link copied!')
+}
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="p-10 flex flex-col gap-4 max-w-md">
+      <h1 className="text-3xl font-bold">Beauty Dash</h1>
+
+      <input
+        className="border p-2"
+        placeholder="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+
+      <input
+        className="border p-2"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+
+      <input
+        className="border p-2"
+        placeholder="Service"
+        value={service}
+        onChange={(e) => setService(e.target.value)}
+      />
+
+      <button
+        className="bg-black text-white p-2 rounded"
+        onClick={handleSubmit}
+      >
+        Join Waitlist
+      </button>
+
+      <button
+        className="bg-blue-600 text-white p-2 rounded mt-4"
+        onClick={triggerCancellation}
+      >
+        Trigger Fake Cancellation
+      </button>
+
+      <button
+      className="bg-gray-800 text-white p-2 rounded mt-2"
+      onClick={copyClaimLink}
+      >
+      Copy Claim Link
+      </button>
+
+      {claimLink && (
+        <div className="border p-3 rounded mt-4">
+          <p className="font-bold">Claim Link:</p>
+          <a
+            href={claimLink}
+            className="text-blue-600 underline break-all"
+          >
+            {claimLink}
+          </a>
+        </div>
+        
+      )}
+
+      <div className="border-t pt-4 mt-4">
+  <h2 className="text-xl font-bold mb-2">Waitlist Clients</h2>
+
+  {waitlistClients.length === 0 ? (
+    <p>No clients on the waitlist yet.</p>
+  ) : (
+    <ul className="flex flex-col gap-2">
+      {waitlistClients.map((client) => (
+        <li key={client.id} className="border p-2 rounded">
+          <p><strong>Name:</strong> {client.name}</p>
+          <p><strong>Email:</strong> {client.email}</p>
+          <p><strong>Service:</strong> {client.service}</p>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
+<div className="border-t pt-4 mt-4">
+  <h2 className="text-xl font-bold mb-2">
+    Available Slots
+  </h2>
+
+  {availableSlots.length === 0 ? (
+    <p>No slots available yet.</p>
+  ) : (
+    <ul className="flex flex-col gap-2">
+      {availableSlots.map((slot) => (
+        <li
+          key={slot.id}
+          className="border p-2 rounded"
+        >
+          <p>
+            <strong>Service:</strong> {slot.service}
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+
+          <p>
+            <strong>Status:</strong> {slot.status}
+          </p>
+
+          <p>
+            <strong>Start:</strong>{' '}
+            {new Date(slot.start_time).toLocaleString()}
+          </p>
+
           <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href={`/claim/${slot.id}`}
+            className="text-blue-600 underline"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
+            Open claim page
           </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+    </main>
+  )
 }
