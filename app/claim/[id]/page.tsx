@@ -9,7 +9,6 @@ export default function ClaimPage() {
   const id = params.id as string
 
   const [slot, setSlot] = useState<any>(null)
-  const [claimLink, setClaimLink] = useState('')
 
   useEffect(() => {
     if (id) {
@@ -32,15 +31,25 @@ export default function ClaimPage() {
   }
 
 const claimSlot = async () => {
-  const { error: slotError } = await supabase
-    .from('slots')
-    .update({ status: 'claimed' })
-    .eq('id', id)
+  const { data, error: slotError } = await supabase
+  .from('slots')
+  .update({
+    status: 'claimed',
+    claimed: true,
+  })
+  .eq('id', id)
+  .eq('claimed', false)
+  .select()
 
   if (slotError) {
-    alert(slotError.message)
-    return
-  }
+  alert(slotError.message)
+  return
+}
+
+if (!data || data.length === 0) {
+  alert('This slot has already been claimed')
+  return
+}
 
   const { error: reservationError } = await supabase
     .from('reservations')
@@ -60,17 +69,29 @@ const claimSlot = async () => {
   }
 }
 
+
   if (!slot) {
     return <div className="p-10">Loading...</div>
   }
+
+  const formattedStartTime = slot?.start_time
+  ? new Date(slot.start_time).toLocaleString('en-GB', {
+      weekday: 'short',
+      day: '2-digit',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  : 'Time not available'
 
   return (
     <main className="p-10 flex flex-col gap-4">
       <h1 className="text-3xl font-bold">Claim Appointment</h1>
 
       <div>Service: {slot.service}</div>
-      <div>Status: {slot.status}</div>
-    {slot.status === 'available' ? (
+      <div>Status: {slot.claimed ? 'Claimed' : 'Available'}</div>
+      <div>Time: {formattedStartTime}</div>
+    {!slot.claimed ? (
       <button
         className="bg-green-600 text-white p-2 rounded"
         onClick={claimSlot}
