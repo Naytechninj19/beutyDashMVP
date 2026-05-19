@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 
 export default function Home() {
@@ -31,32 +31,10 @@ export default function Home() {
 
   
 
-  const fetchWaitlistClients = async () => {
-  const { data, error } = await supabase
-    .from('waitlist')
-    .select('*')
-    .order('created_at', { ascending: false })
-
-  if (error) {
-    console.error(error)
-    return
-  }
-}
 
 
 
-const fetchAvailableSlots = async () => {
-  const { data, error } = await supabase
-    .from('slots')
-    .select('*')
-    .eq('status', 'available')
-    .order('created_at', { ascending: false })
 
-  if (error) {
-    console.error(error)
-    return
-  }
-}
 
 
 

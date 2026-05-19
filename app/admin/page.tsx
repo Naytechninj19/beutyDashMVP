@@ -11,26 +11,7 @@ export default function Home() {
   const [waitlistClients, setWaitlistClients] = useState<any[]>([])
   const [availableSlots, setAvailableSlots] = useState<any[]>([])
 
-  const handleSubmit = async () => {
-    const { error } = await supabase.from('waitlist').insert([
-      {
-        name,
-        email,
-        service,
-      },
-    ])
 
-    if (error) {
-      console.error(error)
-      alert(error.message)
-    } else {
-      alert('Joined waitlist!')
-      setName('')
-      setEmail('')
-      setService('')
-      fetchWaitlistClients()
-    }
-  }
 
   const sendClaimEmail = async (
   clientEmail: string,
@@ -71,6 +52,7 @@ export default function Home() {
           start_time: startTime.toISOString(),
           end_time: endTime.toISOString(),
           status: 'available',
+          claimed: false,
         },
       ])
       .select()
@@ -113,7 +95,7 @@ const fetchAvailableSlots = async () => {
   const { data, error } = await supabase
     .from('slots')
     .select('*')
-    .eq('status', 'available')
+    .eq('claimed', 'false')
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -137,35 +119,10 @@ const fetchAvailableSlots = async () => {
 
   return (
     <main className="p-10 flex flex-col gap-4 max-w-md">
-      <h1 className="text-3xl font-bold">Beauty Dash</h1>
+      <h1 className="text-3xl font-bold">Beauty Dash Admin</h1>
 
-      <input
-        className="border p-2"
-        placeholder="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
 
-      <input
-        className="border p-2"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-
-      <input
-        className="border p-2"
-        placeholder="Service"
-        value={service}
-        onChange={(e) => setService(e.target.value)}
-      />
-
-      <button
-        className="bg-black text-white p-2 rounded"
-        onClick={handleSubmit}
-      >
-        Join Waitlist
-      </button>
+    
 
       <button
         className="bg-blue-600 text-white p-2 rounded mt-4"
