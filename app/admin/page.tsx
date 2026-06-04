@@ -10,6 +10,9 @@ export default function Home() {
   const [claimLink, setClaimLink] = useState('')
   const [waitlistClients, setWaitlistClients] = useState<any[]>([])
   const [availableSlots, setAvailableSlots] = useState<any[]>([])
+  const [claimedSlotsCount, setClaimedSlotsCount] = useState(0)
+  const [reservationsCount, setReservationsCount] = useState(0)
+  const [recentReservations, setRecentReservations] = useState<any[]>([])
 
 
 
@@ -95,7 +98,7 @@ const fetchAvailableSlots = async () => {
   const { data, error } = await supabase
     .from('slots')
     .select('*')
-    .eq('claimed', 'false')
+    .eq('claimed', false)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -109,6 +112,8 @@ const fetchAvailableSlots = async () => {
  useEffect(() => {
     fetchWaitlistClients()
     fetchAvailableSlots()
+    fetchDashboardStats()
+    fetchRecentReservations()
   }, [])
 
   const copyClaimLink = async () => {
@@ -116,18 +121,115 @@ const fetchAvailableSlots = async () => {
   alert('Claim link copied!')
 }
 
+const fetchRecentReservations = async () => {
+  const { data, error } = await supabase
+    .from('reservations')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(3)
+
+  if (error) {
+    console.error(error)
+    return
+  }
+
+  setRecentReservations(data)
+}
+
+const fetchDashboardStats = async () => {
+  const { count: claimedCount, error: claimedError } = await supabase
+    .from('slots')
+    .select('*', { count: 'exact', head: true })
+    .eq('claimed', true)
+
+  if (claimedError) {
+    console.error(claimedError)
+  } else {
+    setClaimedSlotsCount(claimedCount || 0)
+  }
+
+  const { count: reservationCount, error: reservationError } = await supabase
+    .from('reservations')
+    .select('*', { count: 'exact', head: true })
+
+  if (reservationError) {
+    console.error(reservationError)
+  } else {
+    setReservationsCount(reservationCount || 0)
+  }
+
+}
+
 
   return (
     <main className="p-10 flex flex-col gap-4 max-w-md">
       <h1 className="text-3xl font-bold">Beauty Dash Admin</h1>
 
+      <div className="border border-green-600 p-3 rounded bg-green-900/20">
+        <p className="font-bold">Monitoring Status</p>
 
-    
+  <p className="text-green-400"></p>
+  <p>🟢 Calendly Connected</p>
+</div>
+
+<div className="grid grid-cols-2 gap-3">
+  <div className="border p-3 rounded">
+    <p className="text-sm text-gray-600">Waitlist Clients</p>
+    <p className="text-2xl font-bold">{waitlistClients.length}</p>
+  </div>
+
+  <div className="border p-3 rounded">
+    <p className="text-sm text-gray-600">Available Slots</p>
+    <p className="text-2xl font-bold">{availableSlots.length}</p>
+  </div>
+
+  <div className="border p-3 rounded">
+    <p className="text-sm text-gray-600">Claimed Slots</p>
+    <p className="text-2xl font-bold">{claimedSlotsCount}</p>
+  </div>
+
+  <div className="border p-3 rounded">
+    <p className="text-sm text-gray-600">Reservations</p>
+    <p className="text-2xl font-bold">{reservationsCount}</p>
+  </div>
+</div>
+
+<div className="border-t pt-4 mt-4">
+  <h2 className="text-xl font-bold mb-2">Recent Activity</h2>
+
+  {recentReservations.length === 0 ? (
+    <p>No recent reservations yet.</p>
+  ) : (
+    <ul className="flex flex-col gap-2">
+      {recentReservations.map((reservation) => (
+        <li key={reservation.id} className="border p-2 rounded">
+          <p>
+            <strong>Reservation created</strong>
+          </p>
+
+          <p>
+            <strong>Name:</strong> {reservation.client_name}
+          </p>
+
+          <p>
+            <strong>Email:</strong> {reservation.client_email}
+          </p>
+
+          <p>
+            <strong>Created:</strong>{' '}
+            {new Date(reservation.created_at).toLocaleString()}
+          </p>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
 
       <button
         className="bg-blue-600 text-white p-2 rounded mt-4"
         onClick={triggerCancellation}
       >
+
         Trigger Fake Cancellation
       </button>
 
