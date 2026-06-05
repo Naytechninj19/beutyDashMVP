@@ -162,84 +162,111 @@ const fetchDashboardStats = async () => {
 
 
   return (
-    <main className="p-10 flex flex-col gap-4 max-w-md">
-      <h1 className="text-3xl font-bold">Beauty Dash Admin</h1>
+<main className="min-h-screen bg-[#0b0b0f] text-white px-6 py-8">
+  <div className="mx-auto flex max-w-6xl flex-col gap-6">
+      <div className="flex flex-col gap-1">
+  <h1 className="text-4xl font-bold tracking-tight">
+    BEAUTY DASH
+  </h1>
 
-      <div className="border border-green-600 p-3 rounded bg-green-900/20">
-        <p className="font-bold">Monitoring Status</p>
-
-  <p className="text-green-400"></p>
-  <p>🟢 Calendly Connected</p>
+  <p className="text-gray-400">
+    Fill cancellations automatically.
+  </p>
 </div>
 
-<div className="grid grid-cols-2 gap-3">
-  <div className="border p-3 rounded">
-    <p className="text-sm text-gray-600">Waitlist Clients</p>
-    <p className="text-2xl font-bold">{waitlistClients.length}</p>
+<div className="rounded-xl border border-green-500/30 bg-green-500/10 p-5">
+  <p className="text-sm font-medium text-gray-400">
+    Monitoring Status
+  </p>
+
+  <div className="mt-3 flex items-center gap-2">
+    <div className="h-3 w-3 rounded-full bg-green-400"></div>
+
+    <p className="font-semibold">
+      Calendly Connected
+    </p>
   </div>
 
-  <div className="border p-3 rounded">
-    <p className="text-sm text-gray-600">Available Slots</p>
-    <p className="text-2xl font-bold">{availableSlots.length}</p>
+  <p className="mt-2 text-sm text-gray-400">
+    Monitoring cancellations automatically
+  </p>
+</div>
+
+<div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+  <div className="rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg">
+    <p className="text-sm text-gray-400">Waitlist Clients</p>
+    <p className="mt-2 text-3xl font-bold">{waitlistClients.length}</p>
+    <p className="mt-1 text-xs text-pink-400">People waiting</p>
   </div>
 
-  <div className="border p-3 rounded">
-    <p className="text-sm text-gray-600">Claimed Slots</p>
-    <p className="text-2xl font-bold">{claimedSlotsCount}</p>
+  <div className="rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg">
+    <p className="text-sm text-gray-400">Available Slots</p>
+    <p className="mt-2 text-3xl font-bold">{availableSlots.length}</p>
+    <p className="mt-1 text-xs text-pink-400">Ready to claim</p>
   </div>
 
-  <div className="border p-3 rounded">
-    <p className="text-sm text-gray-600">Reservations</p>
-    <p className="text-2xl font-bold">{reservationsCount}</p>
+  <div className="rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg">
+    <p className="text-sm text-gray-400">Claimed Slots</p>
+    <p className="mt-2 text-3xl font-bold">{claimedSlotsCount}</p>
+    <p className="mt-1 text-xs text-green-400">Successfully claimed</p>
+  </div>
+
+  <div className="rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg">
+    <p className="text-sm text-gray-400">Reservations</p>
+    <p className="mt-2 text-3xl font-bold">{reservationsCount}</p>
+    <p className="mt-1 text-xs text-purple-400">Bookings created</p>
   </div>
 </div>
 
-<div className="border-t pt-4 mt-4">
-  <h2 className="text-xl font-bold mb-2">Recent Activity</h2>
+<div className="mt-8 border-t border-white/10 pt-8">
+  <h2 className="mb-4 text-2xl font-bold">Recent Activity</h2>
 
   {recentReservations.length === 0 ? (
     <p>No recent reservations yet.</p>
   ) : (
     <ul className="flex flex-col gap-2">
       {recentReservations.map((reservation) => (
-        <li key={reservation.id} className="border p-2 rounded">
-          <p>
-            <strong>Reservation created</strong>
-          </p>
+        <li
+  key={reservation.id}
+  className="rounded-xl border border-white/10 bg-white/5 p-4"
+>
+  <p className="font-semibold text-pink-400">
+    Booking Confirmed
+  </p>
 
-          <p>
-            <strong>Name:</strong> {reservation.client_name}
-          </p>
+  <p className="mt-2 font-medium">
+    {reservation.client_name}
+  </p>
 
-          <p>
-            <strong>Email:</strong> {reservation.client_email}
-          </p>
+  <p className="text-sm text-gray-400">
+    {reservation.client_email}
+  </p>
 
-          <p>
-            <strong>Created:</strong>{' '}
-            {new Date(reservation.created_at).toLocaleString()}
-          </p>
-        </li>
+  <p className="mt-2 text-sm text-gray-500">
+    {new Date(
+      reservation.created_at
+    ).toLocaleString()}
+  </p>
+</li>
       ))}
     </ul>
   )}
 </div>
+ <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+  <button
+    className="rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 px-5 py-3 font-semibold text-white shadow-lg hover:opacity-90"
+    onClick={triggerCancellation}
+  >
+    Trigger Fake Cancellation
+  </button>
 
-      <button
-        className="bg-blue-600 text-white p-2 rounded mt-4"
-        onClick={triggerCancellation}
-      >
-
-        Trigger Fake Cancellation
-      </button>
-
-      <button
-      className="bg-gray-800 text-white p-2 rounded mt-2"
-      onClick={copyClaimLink}
-      >
-      Copy Claim Link
-      </button>
-
+  <button
+    className="rounded-xl border border-white/10 bg-white/5 px-5 py-3 font-semibold text-white hover:bg-white/10"
+    onClick={copyClaimLink}
+  >
+    Copy Claim Link
+  </button>
+</div>
       {claimLink && (
         <div className="border p-3 rounded mt-4">
           <p className="font-bold">Claim Link:</p>
@@ -253,7 +280,7 @@ const fetchDashboardStats = async () => {
         
       )}
 
-      <div className="border-t pt-4 mt-4">
+      <div className="rounded-xl border border-white/10 bg-white/5 p-5">
   <h2 className="text-xl font-bold mb-2">Waitlist Clients</h2>
 
   {waitlistClients.length === 0 ? (
@@ -261,7 +288,9 @@ const fetchDashboardStats = async () => {
   ) : (
     <ul className="flex flex-col gap-2">
       {waitlistClients.map((client) => (
-        <li key={client.id} className="border p-2 rounded">
+        <li
+  key={client.id}
+  className="rounded-xl border border-white/10 bg-black/20 p-4">
           <p><strong>Name:</strong> {client.name}</p>
           <p><strong>Email:</strong> {client.email}</p>
           <p><strong>Service:</strong> {client.service}</p>
@@ -271,7 +300,7 @@ const fetchDashboardStats = async () => {
   )}
 </div>
 
-<div className="border-t pt-4 mt-4">
+<div className="rounded-xl border border-white/10 bg-white/5 p-5">
   <h2 className="text-xl font-bold mb-2">
     Available Slots
   </h2>
@@ -282,9 +311,8 @@ const fetchDashboardStats = async () => {
     <ul className="flex flex-col gap-2">
       {availableSlots.map((slot) => (
         <li
-          key={slot.id}
-          className="border p-2 rounded"
-        >
+  key={slot.id}
+  className="rounded-xl border border-white/10 bg-black/20 p-4">
           <p>
             <strong>Service:</strong> {slot.service}
           </p>
@@ -300,7 +328,7 @@ const fetchDashboardStats = async () => {
 
           <a
             href={`/claim/${slot.id}`}
-            className="text-blue-600 underline"
+            className="text-pink-400 underline hover:text-pink-300"
           >
             Open claim page
           </a>
@@ -310,7 +338,7 @@ const fetchDashboardStats = async () => {
   )}
 </div>
 
-
+    </div>  
     </main>
   )
 }
