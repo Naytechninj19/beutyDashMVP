@@ -40,41 +40,54 @@ export default function Home() {
 
   
 
-  return (
-    <main className="p-10 flex flex-col gap-4 max-w-md">
-      <h1 className="text-3xl font-bold">Beauty Dash</h1>
+return (
+  <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#0b0b0f] p-6 text-white">
+    <div className="absolute left-0 top-0 h-[420px] w-[420px] rounded-full bg-blue-600/10 blur-[160px]" />
+    <div className="absolute right-0 top-0 h-[420px] w-[420px] rounded-full bg-purple-600/10 blur-[160px]" />
 
-      <input
-        className="border p-2"
-        placeholder="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
+    <div className="relative z-10 w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 shadow-2xl">
+      <div className="mb-6">
+        <p className="font-semibold text-pink-400">Beauty Dash</p>
 
-      <input
-        className="border p-2"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+        <h1 className="mt-2 text-3xl font-bold">
+          Join the Waitlist
+        </h1>
 
-      <input
-        className="border p-2"
-        placeholder="Service"
-        value={service}
-        onChange={(e) => setService(e.target.value)}
-      />
+        <p className="mt-2 text-gray-400">
+          Add your details and we&apos;ll notify you when a cancellation becomes available.
+        </p>
+      </div>
 
-      <button
-        className="bg-black text-white p-2 rounded"
-        onClick={handleSubmit}
-      >
-        Join Waitlist
-      </button>
- 
+      <div className="flex flex-col gap-4">
+        <input
+          className="rounded-xl border border-white/10 bg-black/20 p-3 text-white outline-none placeholder:text-gray-500 focus:border-pink-500"
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
 
-  
+        <input
+          className="rounded-xl border border-white/10 bg-black/20 p-3 text-white outline-none placeholder:text-gray-500 focus:border-pink-500"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-    </main>
-  )
+        <input
+          className="rounded-xl border border-white/10 bg-black/20 p-3 text-white outline-none placeholder:text-gray-500 focus:border-pink-500"
+          placeholder="Service"
+          value={service}
+          onChange={(e) => setService(e.target.value)}
+        />
+
+        <button
+          className="mt-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 py-3 font-semibold text-white shadow-lg hover:opacity-90"
+          onClick={handleSubmit}
+        >
+          Join Waitlist
+        </button>
+      </div>
+    </div>
+  </main>
+)
 }

@@ -9,6 +9,7 @@ export default function ClaimPage() {
   const id = params.id as string
 
   const [slot, setSlot] = useState<any>(null)
+  const [claimSuccess, setClaimSuccess] = useState(false)
 
   useEffect(() => {
     if (id) {
@@ -64,8 +65,8 @@ if (!data || data.length === 0) {
   if (reservationError) {
     alert(reservationError.message)
   } else {
-    alert('Slot claimed and reservation created!')
-    fetchSlot()
+      setClaimSuccess(true)
+      fetchSlot()
   }
 }
 
@@ -85,22 +86,95 @@ if (!data || data.length === 0) {
   : 'Time not available'
 
   return (
-    <main className="p-10 flex flex-col gap-4">
-      <h1 className="text-3xl font-bold">Claim Appointment</h1>
+    <main className="min-h-screen bg-[#0b0b0f] text-white flex items-center justify-center p-6">
+      
+        <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 shadow-xl">
 
-      <div>Service: {slot.service}</div>
-      <div>Status: {slot.claimed ? 'Claimed' : 'Available'}</div>
-      <div>Time: {formattedStartTime}</div>
-    {!slot.claimed ? (
-      <button
-        className="bg-green-600 text-white p-2 rounded"
-        onClick={claimSlot}
-      >
-        Claim Slot
-      </button>
-    ) : (
-        <div className="text-red-600 font-bold">Appointment has already been claimed.</div>
-    )}
+        <div className="mb-6">
+        <p className="text-pink-400 font-semibold">
+          Beauty Dash
+        </p>
+
+        <h1 className="text-3xl font-bold mt-2">
+        Claim Your Spot
+        </h1>
+
+        <p className="text-gray-400 mt-2">
+         A cancellation has become available.
+        </p>
+        </div>
+
+        <div className="rounded-xl border border-white/10 bg-black/20 p-5">
+  <p className="text-gray-400 text-sm">
+    Service
+  </p>
+
+  <p className="font-semibold text-lg">
+    {slot.service}
+  </p>
+
+  <div className="mt-4">
+    <p className="text-gray-400 text-sm">
+      Time
+    </p>
+
+    <p>
+      {formattedStartTime}
+    </p>
+  </div>
+
+  <div className="mt-4">
+    <p className="text-gray-400 text-sm">
+      Status
+    </p>
+
+    <p className="font-medium">
+      {claimSuccess
+        ? 'Confirmed'
+        : slot.claimed
+        ? 'Claimed'
+        : 'Available'}
+    </p>
+  </div>
+</div>
+          {claimSuccess ? (
+        <div className="mt-6 rounded-xl border border-green-500/30 bg-green-500/10 p-5 text-center">
+  <div className="mb-2 text-3xl">
+    ✓
+  </div>
+
+  <p className="font-bold text-green-400">
+    Booking Confirmed
+  </p>
+
+  <p className="mt-2 text-sm text-gray-300">
+    Your appointment has been secured.
+  </p>
+</div>
+) : !slot.claimed ? (
+  <button
+    className="mt-6 w-full rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 py-3 font-semibold text-white"
+    onClick={claimSlot}
+  >
+    Claim Slot
+  </button>
+) : (
+  <div className="mt-6 rounded-xl border border-red-500/30 bg-red-500/10 p-5 text-center">
+  <div className="mb-2 text-3xl">
+    ⏳
+  </div>
+
+  <p className="font-bold text-red-400">
+    Spot Already Taken
+  </p>
+
+  <p className="mt-2 text-sm text-gray-300">
+    This appointment has already been claimed.
+  </p>
+</div>
+
+)}    
+      </div>
     </main>
   )
 }

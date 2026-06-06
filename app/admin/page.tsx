@@ -161,184 +161,236 @@ const fetchDashboardStats = async () => {
 }
 
 
-  return (
-<main className="min-h-screen bg-[#0b0b0f] text-white px-6 py-8">
-  <div className="mx-auto flex max-w-6xl flex-col gap-6">
-      <div className="flex flex-col gap-1">
-  <h1 className="text-4xl font-bold tracking-tight">
-    BEAUTY DASH
-  </h1>
+return (
+  <main className="relative min-h-screen overflow-hidden bg-[#0b0b0f] px-6 py-8 text-white">
+    <div className="absolute left-0 top-0 h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[180px]" />
 
-  <p className="text-gray-400">
-    Fill cancellations automatically.
-  </p>
-</div>
+    <div className="absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-purple-600/10 blur-[180px]" />
 
-<div className="rounded-xl border border-green-500/30 bg-green-500/10 p-5">
-  <p className="text-sm font-medium text-gray-400">
-    Monitoring Status
-  </p>
-
-  <div className="mt-3 flex items-center gap-2">
-    <div className="h-3 w-3 rounded-full bg-green-400"></div>
-
-    <p className="font-semibold">
-      Calendly Connected
-    </p>
-  </div>
-
-  <p className="mt-2 text-sm text-gray-400">
-    Monitoring cancellations automatically
-  </p>
-</div>
-
-<div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-  <div className="rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg">
-    <p className="text-sm text-gray-400">Waitlist Clients</p>
-    <p className="mt-2 text-3xl font-bold">{waitlistClients.length}</p>
-    <p className="mt-1 text-xs text-pink-400">People waiting</p>
-  </div>
-
-  <div className="rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg">
-    <p className="text-sm text-gray-400">Available Slots</p>
-    <p className="mt-2 text-3xl font-bold">{availableSlots.length}</p>
-    <p className="mt-1 text-xs text-pink-400">Ready to claim</p>
-  </div>
-
-  <div className="rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg">
-    <p className="text-sm text-gray-400">Claimed Slots</p>
-    <p className="mt-2 text-3xl font-bold">{claimedSlotsCount}</p>
-    <p className="mt-1 text-xs text-green-400">Successfully claimed</p>
-  </div>
-
-  <div className="rounded-xl border border-white/10 bg-white/5 p-5 shadow-lg">
-    <p className="text-sm text-gray-400">Reservations</p>
-    <p className="mt-2 text-3xl font-bold">{reservationsCount}</p>
-    <p className="mt-1 text-xs text-purple-400">Bookings created</p>
-  </div>
-</div>
-
-<div className="mt-8 border-t border-white/10 pt-8">
-  <h2 className="mb-4 text-2xl font-bold">Recent Activity</h2>
-
-  {recentReservations.length === 0 ? (
-    <p>No recent reservations yet.</p>
-  ) : (
-    <ul className="flex flex-col gap-2">
-      {recentReservations.map((reservation) => (
-        <li
-  key={reservation.id}
-  className="rounded-xl border border-white/10 bg-white/5 p-4"
->
-  <p className="font-semibold text-pink-400">
-    Booking Confirmed
-  </p>
-
-  <p className="mt-2 font-medium">
-    {reservation.client_name}
-  </p>
-
-  <p className="text-sm text-gray-400">
-    {reservation.client_email}
-  </p>
-
-  <p className="mt-2 text-sm text-gray-500">
-    {new Date(
-      reservation.created_at
-    ).toLocaleString()}
-  </p>
-</li>
-      ))}
-    </ul>
-  )}
-</div>
- <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-  <button
-    className="rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 px-5 py-3 font-semibold text-white shadow-lg hover:opacity-90"
-    onClick={triggerCancellation}
-  >
-    Trigger Fake Cancellation
-  </button>
-
-  <button
-    className="rounded-xl border border-white/10 bg-white/5 px-5 py-3 font-semibold text-white hover:bg-white/10"
-    onClick={copyClaimLink}
-  >
-    Copy Claim Link
-  </button>
-</div>
-      {claimLink && (
-        <div className="border p-3 rounded mt-4">
-          <p className="font-bold">Claim Link:</p>
+    <div className="relative z-10 mx-auto flex max-w-7xl gap-6">
+      <aside className="hidden w-56 flex-col rounded-xl border border-white/10 bg-white/[0.03] p-6 md:flex">
+        <h2 className="mb-8 text-xl font-bold">Beauty Dash</h2>
+          
+        <nav className="flex flex-col gap-4 text-gray-300">
           <a
-            href={claimLink}
-            className="text-blue-600 underline break-all"
+            href="#"
+            className="rounded-lg bg-pink-500/20 px-3 py-2 text-pink-400"
           >
-            {claimLink}
+            Dashboard
           </a>
+
+          <a href="#" className="px-3 py-2 text-gray-400 hover:text-white">
+            Waitlist
+          </a>
+
+          <a href="#" className="px-3 py-2 text-gray-400 hover:text-white">
+            Available Slots
+          </a>
+
+          <a href="#" className="px-3 py-2 text-gray-400 hover:text-white">
+            Bookings
+          </a>
+
+          <a href="#" className="px-3 py-2 text-gray-400 hover:text-white">
+            Activity Feed
+          </a>
+        </nav>
+
+        <div className="pt-8 text-gray-500">Logout</div>
+      </aside>
+
+      <div className="flex-1">
+        <h1 className="text-3xl font-bold tracking-tight md:hidden">
+          Beauty Dash
+        </h1>
+
+        <p className="text-gray-400 md:hidden">
+          Fill cancellations automatically.
+        </p>
+
+        <div className="mb-6 hidden md:block">
+          <h1 className="text-3xl font-bold">Dashboard Overview</h1>
+
+          <p className="mt-1 text-gray-400">
+            Here&apos;s what&apos;s happening with your business today.
+          </p>
         </div>
-        
-      )}
 
-      <div className="rounded-xl border border-white/10 bg-white/5 p-5">
-  <h2 className="text-xl font-bold mb-2">Waitlist Clients</h2>
-
-  {waitlistClients.length === 0 ? (
-    <p>No clients on the waitlist yet.</p>
-  ) : (
-    <ul className="flex flex-col gap-2">
-      {waitlistClients.map((client) => (
-        <li
-  key={client.id}
-  className="rounded-xl border border-white/10 bg-black/20 p-4">
-          <p><strong>Name:</strong> {client.name}</p>
-          <p><strong>Email:</strong> {client.email}</p>
-          <p><strong>Service:</strong> {client.service}</p>
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
-
-<div className="rounded-xl border border-white/10 bg-white/5 p-5">
-  <h2 className="text-xl font-bold mb-2">
-    Available Slots
-  </h2>
-
-  {availableSlots.length === 0 ? (
-    <p>No slots available yet.</p>
-  ) : (
-    <ul className="flex flex-col gap-2">
-      {availableSlots.map((slot) => (
-        <li
-  key={slot.id}
-  className="rounded-xl border border-white/10 bg-black/20 p-4">
-          <p>
-            <strong>Service:</strong> {slot.service}
+        <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-5">
+          <p className="text-sm font-medium text-gray-400">
+            Monitoring Status
           </p>
 
-          <p>
-            <strong>Status:</strong> {slot.status}
-          </p>
+          <div className="mt-3 flex items-center gap-2">
+            <div className="h-3 w-3 rounded-full bg-green-400"></div>
 
-          <p>
-            <strong>Start:</strong>{' '}
-            {new Date(slot.start_time).toLocaleString()}
-          </p>
+            <p className="font-semibold">Calendly Connected</p>
+          </div>
 
-          <a
-            href={`/claim/${slot.id}`}
-            className="text-pink-400 underline hover:text-pink-300"
+          <p className="mt-2 text-sm text-gray-400">
+            Monitoring cancellations automatically
+          </p>
+        </div>
+
+        <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="rounded-xl border border-white/10 bg-white/[0.04] p-5 shadow-lg">
+            <p className="text-sm text-gray-400">Waitlist Clients</p>
+            <p className="mt-2 text-3xl font-bold">
+              {waitlistClients.length}
+            </p>
+            <p className="mt-1 text-xs text-pink-400">People waiting</p>
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-white/[0.04] p-5 shadow-lg">
+            <p className="text-sm text-gray-400">Available Slots</p>
+            <p className="mt-2 text-3xl font-bold">
+              {availableSlots.length}
+            </p>
+            <p className="mt-1 text-xs text-pink-400">Ready to claim</p>
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-white/[0.04] p-5 shadow-lg">
+            <p className="text-sm text-gray-400">Claimed Slots</p>
+            <p className="mt-2 text-3xl font-bold">{claimedSlotsCount}</p>
+            <p className="mt-1 text-xs text-green-400">
+              Successfully claimed
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-white/[0.04] p-5 shadow-lg">
+            <p className="text-sm text-gray-400">Reservations</p>
+            <p className="mt-2 text-3xl font-bold">{reservationsCount}</p>
+            <p className="mt-1 text-xs text-purple-400">Bookings created</p>
+          </div>
+        </div>
+
+        <div className="mt-8 border-t border-white/10 pt-8">
+          <h2 className="mb-4 text-2xl font-bold">Recent Activity</h2>
+
+          {recentReservations.length === 0 ? (
+            <p>No recent reservations yet.</p>
+          ) : (
+            <ul className="flex flex-col gap-2">
+              {recentReservations.map((reservation) => (
+                <li
+                  key={reservation.id}
+                  className="rounded-xl border border-white/10 bg-white/5 p-4"
+                >
+                  <p className="font-semibold text-pink-400">
+                    Booking Confirmed
+                  </p>
+
+                  <p className="mt-2 font-medium">
+                    {reservation.client_name}
+                  </p>
+
+                  <p className="text-sm text-gray-400">
+                    {reservation.client_email}
+                  </p>
+
+                  <p className="mt-2 text-sm text-gray-500">
+                    {new Date(reservation.created_at).toLocaleString()}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <button
+            className="rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 px-5 py-3 font-semibold text-white shadow-lg hover:opacity-90"
+            onClick={triggerCancellation}
           >
-            Open claim page
-          </a>
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
+            Trigger Fake Cancellation
+          </button>
 
-    </div>  
-    </main>
-  )
+          <button
+            className="rounded-xl border border-white/10 bg-white/5 px-5 py-3 font-semibold text-white hover:bg-white/10"
+            onClick={copyClaimLink}
+          >
+            Copy Claim Link
+          </button>
+        </div>
+
+        {claimLink && (
+          <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4">
+            <p className="font-bold">Claim Link:</p>
+
+            <a
+              href={claimLink}
+              className="break-all text-pink-400 underline hover:text-pink-300"
+            >
+              {claimLink}
+            </a>
+          </div>
+        )}
+
+        <div className="mt-8 rounded-xl border border-white/10 bg-white/5 p-5">
+          <h2 className="mb-4 text-xl font-bold">Waitlist Clients</h2>
+
+          {waitlistClients.length === 0 ? (
+            <p>No clients on the waitlist yet.</p>
+          ) : (
+            <ul className="flex flex-col gap-2">
+              {waitlistClients.map((client) => (
+                <li
+                  key={client.id}
+                  className="rounded-xl border border-white/10 bg-black/20 p-5"
+                >
+                  <p>
+                    <strong>Name:</strong> {client.name}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {client.email}
+                  </p>
+                  <p>
+                    <strong>Service:</strong> {client.service}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="mt-8 rounded-xl border border-white/10 bg-white/5 p-5">
+          <h2 className="mb-4 text-xl font-bold">Available Slots</h2>
+
+          {availableSlots.length === 0 ? (
+            <p>No slots available yet.</p>
+          ) : (
+            <ul className="flex flex-col gap-2">
+              {availableSlots.map((slot) => (
+                <li
+                  key={slot.id}
+                  className="rounded-xl border border-white/10 bg-black/20 p-4"
+                >
+                  <p>
+                    <strong>Service:</strong> {slot.service}
+                  </p>
+
+                  <p>
+                    <strong>Status:</strong> {slot.status}
+                  </p>
+
+                  <p>
+                    <strong>Start:</strong>{' '}
+                    {new Date(slot.start_time).toLocaleString()}
+                  </p>
+
+                  <a
+                    href={`/claim/${slot.id}`}
+                    className="text-pink-400 underline hover:text-pink-300"
+                  >
+                    Open claim page
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </div>
+  </main>
+)
 }
