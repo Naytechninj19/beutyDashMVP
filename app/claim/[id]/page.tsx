@@ -10,6 +10,7 @@ export default function ClaimPage() {
 
   const [slot, setSlot] = useState<any>(null)
   const [claimSuccess, setClaimSuccess] = useState(false)
+  const [claimError, setClaimError] = useState('')
 
   useEffect(() => {
     if (id) {
@@ -48,7 +49,8 @@ const claimSlot = async () => {
 }
 
 if (!data || data.length === 0) {
-  alert('This slot has already been claimed')
+  setClaimError('This appointment has already been claimed.')
+  fetchSlot()
   return
 }
 
@@ -86,9 +88,11 @@ if (!data || data.length === 0) {
   : 'Time not available'
 
   return (
-    <main className="min-h-screen bg-[#0b0b0f] text-white flex items-center justify-center p-6">
-      
-        <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 shadow-xl">
+    <main className="relative min-h-screen overflow-hidden bg-[#0b0b0f] text-white flex items-center justify-center p-6">
+      <div className="absolute left-0 top-0 h-[420px] w-[420px] rounded-full bg-blue-600/10 blur-[160px]" />
+
+      <div className="absolute right-0 top-0 h-[420px] w-[420px] rounded-full bg-purple-600/10 blur-[160px]" />
+        <div className="relative z-10 w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 shadow-xl">
 
         <div className="mb-6">
         <p className="text-pink-400 font-semibold">
@@ -151,6 +155,20 @@ if (!data || data.length === 0) {
     Your appointment has been secured.
   </p>
 </div>
+) : claimError ? (
+  <div className="mt-6 rounded-xl border border-red-500/30 bg-red-500/10 p-5 text-center">
+    <div className="mb-2 text-3xl">
+      ⏳
+    </div>
+
+    <p className="font-bold text-red-400">
+      Spot Already Taken
+    </p>
+
+    <p className="mt-2 text-sm text-gray-300">
+      {claimError}
+    </p>
+  </div>
 ) : !slot.claimed ? (
   <button
     className="mt-6 w-full rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 py-3 font-semibold text-white"
