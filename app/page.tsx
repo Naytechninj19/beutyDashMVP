@@ -7,6 +7,7 @@ export default function Home() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [service, setService] = useState('')
+  const [joinedSuccess, setJoinedSuccess] = useState(false)
 
 
   const handleSubmit = async () => {
@@ -22,7 +23,7 @@ export default function Home() {
       console.error(error)
       alert(error.message)
     } else {
-      alert('Joined waitlist!')
+      setJoinedSuccess(true)
       setName('')
       setEmail('')
       setService('')
@@ -50,43 +51,66 @@ return (
         <p className="font-semibold text-pink-400">Beauty Dash</p>
 
         <h1 className="mt-2 text-3xl font-bold">
-          Join the Waitlist
+          {joinedSuccess ? "You're on the list" : 'Join the Waitlist'}
         </h1>
 
         <p className="mt-2 text-gray-400">
-          Add your details and we&apos;ll notify you when a cancellation becomes available.
+          {joinedSuccess
+            ? "We'll notify you when a cancellation becomes available."
+            : "Add your details and we'll notify you when a cancellation becomes available."}
         </p>
       </div>
 
-      <div className="flex flex-col gap-4">
-        <input
-          className="rounded-xl border border-white/10 bg-black/20 p-3 text-white outline-none placeholder:text-gray-500 focus:border-pink-500"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+      {joinedSuccess ? (
+        <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-5 text-center">
+          <div className="mb-2 text-3xl">✓</div>
 
-        <input
-          className="rounded-xl border border-white/10 bg-black/20 p-3 text-white outline-none placeholder:text-gray-500 focus:border-pink-500"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+          <p className="font-bold text-green-400">
+            Successfully joined
+          </p>
 
-        <input
-          className="rounded-xl border border-white/10 bg-black/20 p-3 text-white outline-none placeholder:text-gray-500 focus:border-pink-500"
-          placeholder="Service"
-          value={service}
-          onChange={(e) => setService(e.target.value)}
-        />
+          <p className="mt-2 text-sm text-gray-300">
+            You&apos;ll be contacted when a suitable appointment opens up.
+          </p>
 
-        <button
-          className="mt-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 py-3 font-semibold text-white shadow-lg hover:opacity-90"
-          onClick={handleSubmit}
-        >
-          Join Waitlist
-        </button>
-      </div>
+          <button
+            className="mt-6 w-full rounded-xl border border-white/10 bg-white/5 py-3 font-semibold text-white hover:bg-white/10"
+            onClick={() => setJoinedSuccess(false)}
+          >
+            Add another client
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          <input
+            className="rounded-xl border border-white/10 bg-black/20 p-3 text-white outline-none placeholder:text-gray-500 focus:border-pink-500"
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+
+          <input
+            className="rounded-xl border border-white/10 bg-black/20 p-3 text-white outline-none placeholder:text-gray-500 focus:border-pink-500"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <input
+            className="rounded-xl border border-white/10 bg-black/20 p-3 text-white outline-none placeholder:text-gray-500 focus:border-pink-500"
+            placeholder="Service"
+            value={service}
+            onChange={(e) => setService(e.target.value)}
+          />
+
+          <button
+            className="mt-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 py-3 font-semibold text-white shadow-lg hover:opacity-90"
+            onClick={handleSubmit}
+          >
+            Join Waitlist
+          </button>
+        </div>
+      )}
     </div>
   </main>
 )
